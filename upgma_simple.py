@@ -16,9 +16,7 @@ class UpgmaTrivial(object):
     A trivial implementation of UPGMA.
     """
 
-    __slots__ = "labels", "matrix", "tree", \
-                "_matrix_org", "_labels_org", \
-                "_cluster_weight"
+    __slots__ = "labels", "matrix", "tree"
 
     def __init__(self, labels, matrix):
         if matrix is None and labels is None:
@@ -38,10 +36,7 @@ class UpgmaTrivial(object):
             raise AttributeException("Matrix is not square")
 
         self.labels = labels
-        self._labels_org = labels.copy()
-        self._cluster_weight = [1 for _ in range(len(labels))]
         self.matrix = matrix
-        self._matrix_org = matrix.copy()
         self.tree = None
 
         for _ in range(len(self.matrix) - 1):
@@ -73,18 +68,7 @@ class UpgmaTrivial(object):
         :return: merged label
         """
         self.labels[c1] = "({0},{1})".format(self.labels[c1], self.labels[c2])
-        self._cluster_weight[c1] += self._cluster_weight[c2]
         del self.labels[c2]
-        del self._cluster_weight[c2]
-
-    def cluster_size(self, c):
-        """
-        Determine cluster size by index.
-
-        :param c: index of cluster
-        :return:
-        """
-        return self._cluster_weight[c]
 
     def join_table(self, c1, c2):
         """
@@ -94,10 +78,14 @@ class UpgmaTrivial(object):
         :return: modified table reference
         """
 
-        for i in range(len(self.matrix)):
-            self.matrix[c1][i] = (self.matrix[c1][i] * self.cluster_size(c1) +
-                                  self.matrix[c2][i] * self.cluster_size(c2)) / \
-                                 (self._cluster_weight[c1] + self._cluster_weight[c2])
+        for i in range(c1):
+            self.matrix[c1][i] = (self.matrix[c1][i] + self.matrix[c2][i]) / 2
+
+        for i in range(c1 + 1, c2):
+            self.matrix[i][c1] = (self.matrix[i][c1] + self.matrix[c2][i]) / 2
+
+        for i in range(c2 + 1, len(self.matrix)):
+            self.matrix[i][c1] = (self.matrix[i][c1] + self.matrix[i][c2]) / 2
 
         for i in range(len(self.matrix)):
             del self.matrix[i][c2]
