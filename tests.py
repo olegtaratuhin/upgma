@@ -75,8 +75,54 @@ class UpgmaTest(TestCase):
             [0, 17, 21, 31, 23],  # A
             [0,  0, 30, 34, 21],  # B
             [0,  0,  0, 28, 39],  # C
-            [0,  0,  0,  0, 43],  # D
+            [0,  0,  0,  0,  3],  # D
             [0,  0,  0,  0,  0]   # E
         ]
-        tree = "((C,D),((A,B),E))"
+        tree = "(((A,B),C),(D,E))"
+        self.assertEqual(tree, upgma(labels, matrix).tree)
+
+    def test_example_3(self):
+        labels = "A B C D E F".split(' ')
+        matrix = [
+            [0, 17, 21,  6,  1,  4],  # A
+            [0,  0,  2, 34, 21,  2],  # B
+            [0,  0,  0, 28, 39,  8],  # C
+            [0,  0,  0,  0,  3, 20],  # D
+            [0,  0,  0,  0,  0,  3],  # E
+            [0,  0,  0,  0,  0,  0]   # F
+        ]
+        tree = "(((A,E),D),((B,C),F))"
+        self.assertEqual(tree, upgma(labels, matrix).tree)
+
+    def test_example_4(self):
+        labels = "A B C D E F".split(' ')
+        matrix = [
+            [0,  1, 21,  6,  1,  4],  # A
+            [0,  0,  2, 34, 21,  2],  # B
+            [0,  0,  0,  1,  3,  8],  # C
+            [0,  0,  0,  0,  3, 20],  # D
+            [0,  0,  0,  0,  0,  3],  # E
+            [0,  0,  0,  0,  0,  0]   # F
+        ]
+        tree = "((((A,B),E),F),(C,D))"
+        self.assertEqual(tree, upgma(labels, matrix).tree)
+
+    def test_example_5(self):
+        labels = "A B C".split(' ')
+        matrix = [
+            [0, 1, 1],
+            [0, 0, 8],
+            [0, 0, 0]
+        ]
+        tree = "((A,B),C)"
+        self.assertEqual(tree, upgma(labels, matrix).tree)
+
+    def test_example_6(self):
+        labels = "A B C".split(' ')
+        matrix = [
+            [0, 2, 2],
+            [0, 0, 1],
+            [0, 0, 0]
+        ]
+        tree = "(A,(B,C))"
         self.assertEqual(tree, upgma(labels, matrix).tree)
