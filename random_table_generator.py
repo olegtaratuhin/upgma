@@ -35,6 +35,30 @@ class RandomGenerator(object):
                     f.write('\n')
 
 
+def read_from(file, sep=' '):
+    with open(file, "r") as f:
+        labels = None
+        matrix = []
+        for line in f.readlines():
+            if labels is None:
+                labels = line.split(sep)
+                labels[-1] = labels[-1].strip()  # hack for annoying '\n'
+                continue
+            _, *args = line.split(' ')
+            matrix.append([float(x) for x in args])
+
+    return labels, matrix
+
+
+def test_files_generator():
+    for i in range(10):
+        yield "random_tests/test_{0}.txt".format(i)
+
+
 if __name__ == "__main__":
     g = RandomGenerator()
-    g.generate(10)
+    g.generate(1)
+    # labels, matrix = read_from("random_tests/test_0.txt")
+    # print(labels)
+    # print(matrix)
+    # print([filename for filename in test_files_generator()])
