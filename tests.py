@@ -4,6 +4,8 @@ This file contains unit tests for UPGMA algorithm.
 
 from unittest import TestCase
 from upgma_simple import UpgmaTrivial as upgma, AttributeException as exc
+from random_table_generator import read_from, test_files_generator
+from tree_validator import is_equivalent
 
 
 class UpgmaTest(TestCase):
@@ -126,3 +128,10 @@ class UpgmaTest(TestCase):
         ]
         tree = "(A,(B,C))"
         self.assertEqual(tree, upgma(labels, matrix).tree)
+
+    def test_random(self):
+        for test_file in test_files_generator():
+            labels, matrix = read_from(test_file)
+
+            self.assertTrue(is_equivalent(upgma(labels, matrix).tree, test_file))
+
